@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>利用日志进行排除错误</title>
+    <url>/2022/01/05/%E4%BD%BF%E7%94%A8%E6%97%A5%E5%BF%97%E8%B0%83%E8%AF%95%E7%A8%8B%E5%BA%8F/</url>
+    <content><![CDATA[<p>    日志是一个相当宽泛的概念，但它的本质往往是操作系统中某个进程中代码夹杂的一部分打印函数造成的。从排错的角度来看，甚至Error和Wrong等提示也算是一种日志。</p>
+<p>    日志的本质就是将<strong>当前代码正在做的事情</strong>写下来，日志的内容可能甚至有当前系统变量的一部分，这就让通过日志来复现Bug和验证程序成为可能。在掌握各种调试技巧之前，日志是最为简单直观的方法。</p>
+<p>    调试程序可以利用调试器来观察问题发生处的堆栈调用，或者分析进程崩溃文件(Dump)，但是这往往建立在调试者熟悉软件的业务流程，所以调试的过程往往是先直观的观察一下日志，接下来定位错误位置，最后进行调试器调试细节。</p>
+<p>    在一些情况下，例如软件项目规模庞大以至于没人会对全部代码熟悉，或者子系统的代码变更速度快，其代码增量和存量都要求开发者能够借助日志分析软件行为。</p>
+<p>    也有一些情况下迫不得已只能利用日志进行排错，在某些软件的运行过程中，开发者不允许直接接触软件运行现场，从而没有第三方工具的调试支持，没有额外的断点对应的地方，没有任何其他的技术特征，能做的只有简单的日志排查，虽然能观察到一些State的具体值，但是没办法去利用第三方工具得更多的信息。</p>
+<p>当调试的手法只能退化到这个层次的时候，我们完全的利用逻辑进行判断。</p>
+<p>观察日志来排除错误依赖的是是调试者对这个项目代码的熟悉程度，并不是完全的依靠编程水平或者debug能力，但定位问题是必须的，否则解决问题就无从谈起。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Anki使用经验</title>
+    <url>/2022/01/06/Anki%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C/</url>
+    <content><![CDATA[<h3 id="Anki的使用方法和配置"><a href="#Anki的使用方法和配置" class="headerlink" title="Anki的使用方法和配置"></a>Anki的使用方法和配置</h3><p>​    Anki对于我来说是一个<strong>复习工具</strong>但因为它的内容都是字符编写的(这意味着计算机可以极快的搜索到关键字)卡片，所以我也会那它当作<strong>检索工具</strong>，它的复习<strong>周期</strong>最少是以<strong>天</strong>记的，并且根据<strong>理解和回忆的程度</strong>来决定下次复习的<strong>间隔</strong>。</p>
+<blockquote>
+<p>这意味着每日复习，细水长流。</p>
+</blockquote>
+<p>Anki的复习每次以一张Card出现，Card的常见类型是AB双面类型和Cloze填空类型。</p>
+<blockquote>
+<p>良好的问题可以起到总结归纳知识的作用。</p>
+</blockquote>
+<p>这两种类型用途很广泛，我常利用AB类型的卡片回忆编辑器Vim的快捷键和Git的常用命令，Cloze则用来学习英语或者需要有点上下文描述的问题。</p>
+<blockquote>
+<p>为什么新创建的ClozeNote当天只出现一个Card？</p>
+<p><strong>“搁置相关复习到隔日”=“屏蔽复习卡片的相关卡片”</strong> 。屏蔽也可以理解“暂停”，搁置相关卡片到明日，并且搁置相关卡片复习到明日，这是因为我们的Deck中很可能存在Cloze，这就让Cloze的使用更加好，因为我们不想一次把所有的填空都写了。</p>
+</blockquote>
+<p>    Anki最令我感到满意的是它间歇的回顾总会给人温故知新的机会，在某个日子回忆数张英语单词卡片时自己突然有了新的理解，编辑卡片补充内容后知识会愈加牢靠。</p>
+<p>    Anki在默认参数(它足以胜任)下，一张知识卡片会尝试在大约半个月时间内询问2到3次的提问，此后提问的时间间隔将会延长。</p>
+<p>但是，高频机械重复会令人厌倦复习，在理解知识的前提下经历理<code>解-记住-遗忘-回想-记起-遗忘-回想-记起</code>.这样的循环才能真正将知识掌握。</p>
+<p>    每天的Anki面板处会看到Deck右侧绿色的卡片数量，即<code>到期卡片</code>需要进行复习的。</p>
+<p>    在这个过程中，会有四种回忆状态来改变卡片的复习周期。</p>
+<blockquote>
+<p>新卡片-步伐：第一个数字是学习新卡片选择【重来】的间隔，1 表示重来的间隔是 1 分钟，即一分钟后会重新出现。后面的数字是学习新卡片时选择【一般】的间隔， 5 10 表示第一次间隔 5 分钟，第二次间隔 10 分钟；</p>
+<p>毕业间隔：学习新卡片后连续选择【一般】的间隔；</p>
+<p>简单间隔：学习新卡片后选择【简单】的间隔；</p>
+<p>开始简化：其实英文是 starting ease ，即初始简易度，这个决定了每次间隔之间的倍数；你可能记忆的越来越深刻了，我们不需要经常复习了。</p>
+<p>简单奖励：与选择【简单】的间隔有关；该参数非常复杂，我们不容易察觉到它的改动，我们在检查长期复习的情况下不应该改动这个参数。你不会考虑疯狂的复习的吧？正是因为不能瞬间记忆一切所以才使用Anki的吧？</p>
+<p>新间隔：重来卡片连续选择一般/简单后，下次复习的【间隔】= 之前复习的间隔 * 【新间隔】，默认为 0；注意，如果你选了这个选项，实际上就是这个卡片变成重新学写了。新间隔如果设为0，那么一旦一张数月或者数年间隔的卡片回答“错误”，将导致此卡片重来。</p>
+<p>最小间隔：默认为<code>1</code>，即针对复习卡片忘记后点击“生疏/错误”按钮，最小出现天数为一天，也就是第二天就会出现。因为新间隔算出来可能很小，如果小于最小间隔，就用最小间隔来替代下次复习的【间隔】；如果将这个值设为<code>10天</code>，哪怕<code>新间隔</code>设为<code>0</code>，最早也需要十天后才会出现。最小间隔是指回答“错误”之后的复习卡片将被安排下次复习时间的最早日期，默认是1天后复习。</p>
+<p>难点阈值：设置难点阈值，即累计失误次数；如果错误次数过多，那么会导致暂停。记忆难点动作：如果一张卡片的失误次数超过难点阈值，就会【暂停卡片】或者【仅标记】。</p>
+<p>记忆难点动作：如果一张卡片的失误次数超过难点阈值，就会【暂停卡片】或者【仅标记】。<br> 最大间隔不建议减少，压缩间隔至几十天内循环更是不可取，只会造成卡片大量堆积。</p>
+<p>搁置相关新卡片到隔日 卡片类型如果有很多类型，创建一张就会附带出现很多张，比较常见的是正反互换的类型……这两张卡创建的时候是上下楼的关系，但如果背诵的时候也连着背就毫无效果，所以勾这个选项可以让楼下延迟到明天去背。</p>
+</blockquote>
+<p>    人的记忆容量是有限的，Anki承担了回顾的任务，它也会促使你不断精进对卡片的理解。</p>
+<p>    从长期学习来看只需要把自己的记忆集中在当前最需要学习的内容上，不用强迫自己学会每一张卡片，学习本来就是动态的过程。</p>
+<blockquote>
+<p><strong>难点阈值</strong>和<strong>暂停卡片</strong></p>
+<p>当某一张卡片累计学了8次，你都点击<strong>忘记</strong>时，软件会判断这张卡片是难点卡片，然后会把这张卡片给暂定学习。暂停之后，就不会出现在复习列表中了。</p>
+<p>默认是将卡片暂停，一张卡片如果连续错4天对记忆负担已经够大了，连续错8天的卡片容易引起焦虑，不建议将阈值设定如此高。</p>
+</blockquote>
+<p>    产生红色失误选项意味着这张卡片很可能有些”问题”，需要重新对卡片进行修改，以及让自己及时看书回忆，并让卡片更加符合自己脑海中的理解。原因可能有这几个：</p>
+<p>① 单张卡片信息量太大，那么就把大卡片拆散，拆成小卡片学习，小卡片之后再做一张汇总的卡片。</p>
+<p>② 学的时候没理解好，那么就回到书上再好好学一学。</p>
+<p>③ 语言表达拗口，那么就用自己的话重新说一遍。处理完之后再复习，就好多了，比之前机械重复更划算。</p>
+<p>    逐步积累后会让知识以卡片的形式被沉淀下来。有意识的遇到和自己的理解不相匹配的卡片时及时改正该卡片，让它简单，清晰，明了，仿佛自己的好友对话一般。重复含义的卡片，内容不再合适的卡片，往往会导致回忆困难。</p>
+<p>    认认真真对待每一张卡片，手写或者思考卡片的答题过程。和知识朝夕相处，及时改正不合适的卡片，自己认为最舒适的信息密度和排版。</p>
+<p><strong>更容易的找到需要的卡片</strong></p>
+<p>​ <strong>标签</strong>会对知识进行理解上的分类，例如单词的词性和使用场景。虽然我们第一次创造一张卡片时不一定会这么考虑到。</p>
+<p>​ 从而需要卡片本身携带有一些标签帮助我们归纳它们。制作一张卡片，放在一个总卡堆，打好标签，每张卡片的标签<strong>最加打两个</strong>。</p>
+<ol>
+<li><p>摘录的书籍名字章节（ 知识来源）</p>
+</li>
+<li><p>知识点的名称（知识定位）</p>
+<p>标签打得越多越好，虽然打标签是一个辛苦的工作，很多人懒得去打，但来源和定位是两个最起码的标签，请务必打上。</p>
+</li>
+</ol>
+<p>    在添加卡片时多输入或者点击需要的标签以让卡片更容易被查询到。</p>
+<p>    可以通过给单词卡片分类”经济类的””社会科学类的”来大致的区分它们，<strong>对知识越负责则知识的运用越熟练</strong>。</p>
+<p>    使用标签，归类，和现实的书本结合在一起，作为学习的辅助用品。</p>
+<h3 id="牌组管理"><a href="#牌组管理" class="headerlink" title="牌组管理"></a>牌组管理</h3><p>建立父牌组和多级子牌组(deck)</p>
+<p>命名Deck的名称为<code>&quot;A::B&quot;</code>A是你的父牌组,B是你的子牌组名字</p>
+<p>标签<br>设立标签后可以使用ANKI的浏览器筛选特定标签进行记忆</p>
+<p>创建筛选的牌组<br>具体筛选标准有很多:标签 时间 新旧卡片 记忆难点卡片等</p>
+<p>​ 自定义学习库中的学习数量可以调整，但是我们它需要我们经常性的复习。</p>
+<p>这个过程甚至解放了添加单词的噩梦，我们不用再拘泥于单词的意思，只要收录，再次收录，就可以平稳迭代。</p>
+<p><strong>结论</strong></p>
+<p>    容易理解又有秩序的卡组不是一天制作好的，而是需要用<strong>增量逐渐替代存量</strong>。</p>
+<p>    参数调整只是工具使用中的一个小环节，调整的目的是为了配合学习，并不是调整了参数就能代替学习。<strong>学习永远无法由工具代替。</strong></p>
+<h4 id="筛选牌组"><a href="#筛选牌组" class="headerlink" title="筛选牌组"></a>筛选牌组</h4><p>想选择在过去一周内，我忘记的知识点。</p>
+<ul>
+<li><p>想复习忘记次数最多的、时间间隔最长的知识点。</p>
+</li>
+<li><p>完全随机抽取卡片。</p>
+</li>
+<li><p>临近考试了，想调取添加X标签的卡临时冲刺一下。</p>
+<p>综上所说，该设计鼓励自己承认错误。</p>
+</li>
+</ul>
+<h4 id="排序规则"><a href="#排序规则" class="headerlink" title="排序规则"></a>排序规则</h4><p><strong>Oldest seen first 最旧卡片优先</strong></p>
+<p>Display cards that you haven’t seen in reviews for the longest time first.顾名思义，最久没有复习的卡片会最先显示，然后按此递减。</p>
+<blockquote>
+<p>这是一个常用的选项，我们需要检查最长时间没有复习的卡片。</p>
+</blockquote>
+<p><strong>Random 随机</strong></p>
+<p>Randomize the order of all cards that match the filter criteria (use no set order). 随机就是随机</p>
+<p><strong>Increasing intervals</strong></p>
+<p>Display cards that have the smallest interval first. 最小间隔的卡优先，也就是最近才刚刚复习过的卡片。</p>
+<p><strong>Decreasing intervals</strong></p>
+<p>Display cards that have the largest interval first. 最大间隔卡有限</p>
+<p>注意：Increasing intervals和Increasing intervals两个涉及间隔概念。</p>
+<p><strong>Most lapses 最多失误数的</strong></p>
+<p>Display cards that you have failed the most times first. 错最多的卡最先显示</p>
+<p><strong>Order added 按照添加顺序</strong></p>
+<p>Display cards that you added first (have the earliest creation date) first. 优先显示你最早创建的卡片(最早创建日期)。</p>
+<p><strong>Order due按照到期顺序</strong></p>
+<p>Display cards with the earliest due date first. 最早到期优先显示</p>
+<p><strong>Latest added first 最近优先</strong></p>
+<p>Display cards that you’ve most recently added to the deck first. (This is the opposite of <em>Order added</em>.)复习卡中 先显示你最近没有复习过的。</p>
+<p><strong>Relative overdueness 按照相对过期程度</strong></p>
+<p>这将会让即将到期要复习的卡片优先显示。</p>
+<h4 id="是否重规划"><a href="#是否重规划" class="headerlink" title="是否重规划"></a>是否重规划</h4><p>​ 创建筛选牌组是可以不关联学习进度的，在筛选卡片中，取消勾选<code>重新安排学习进度</code>。创建一组不影响之前原定的复习计划的关键是，不要勾选<strong>Reschedule</strong>。不然会记录你这次的学习情况加以调整原定的复习计划。</p>
+<p>​ 当进行牌组选定指定卡片的过程中，即Rebuild中我们需要选中时候让卡片重新的规划它的间隔时间。使用该选项的更好策略是第一遍我们不使用Reschedule单纯的进行复习，你可以在这个过程里没有任何副作用的复习，并且你可以给你认为需要的卡片添加一个Tag，从而单独的复习它们。</p>
+<p>​ 所以，旨在Tag的搜索中使用Reschedule。其余的情况下都不使用。</p>
+<h4 id="搜索规则"><a href="#搜索规则" class="headerlink" title="搜索规则"></a>搜索规则</h4><blockquote>
+<p>Anki在学习语言类的知识是当作一个词典也是很棒的体验。</p>
+</blockquote>
+<p><strong>模糊搜索</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dog</span><br></pre></td></tr></table></figure>
+
+<p>搜索“dog”- 将查找到像“dog”和“doggy”这样的词</p>
+<p><strong>多关键字搜索</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dog cat</span><br></pre></td></tr></table></figure>
+
+<p>查找带有“dog”和“cat”的笔记，如“dog and cat”</p>
+<p><strong>或搜索</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dog or cat</span><br></pre></td></tr></table></figure>
+
+<p>查找带有“dog”或“cat”的笔记</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dog (cat or mouse)</span><br></pre></td></tr></table></figure>
+
+<p>查找带有dog和cat，或带有dog和mouse的笔记</p>
+<p><strong>非搜索</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-cat</span><br></pre></td></tr></table></figure>
+
+<p>查找不含“cat”字样的笔记。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-cat -mouse</span><br></pre></td></tr></table></figure>
+
+<p>查找既没有“cat”也没有“mouse”的笔记。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\- (cat or mouse)</span><br></pre></td></tr></table></figure>
+
+<p>与上述相同。</p>
+<p><strong>精确搜索</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;a dog&quot;</span><br></pre></td></tr></table></figure>
+
+<p>查找带有确切短语 “a dog” 的笔记</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-&quot;a dog”</span><br></pre></td></tr></table></figure>
+
+<p>查找没有确切短语 “a dog” 的笔记</p>
+<p><strong>通配符搜索</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">d_g</span><br></pre></td></tr></table></figure>
+
+<p>查找带有d,&lt;一个字母&gt;,g，比如 dog, dig, dug 等的笔记。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">d*g</span><br></pre></td></tr></table></figure>
+
+<p>查找带有d,&lt;没有或有多个字符&gt;,g的笔记，如dg，dog，dung等。</p>
+<p>Anki 只能在您配置的排序字段中进行查找。例如，如果向其中一个字段添加 “example”，除非该字段是排序字段,不然在查找”example”时将不会匹配。</p>
+<h5 id="限制字段搜索"><a href="#限制字段搜索" class="headerlink" title="限制字段搜索"></a>限制字段搜索</h5><p>您也可以要求 Anki 仅在特定字段包含某些文本时才匹配。与上述查找方法不同，在特定字段中查找时，默认情况下需要完全匹配。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">问题:dog</span><br></pre></td></tr></table></figure>
+
+<p>查找<strong>问题</strong>字段全词匹配”dog”的笔记。一个写着”a dog”的<strong>问题</strong>字段将不匹配。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">问题:*dog</span><br></pre></td></tr></table></figure>
+
+<p>查找<strong>问题</strong>字段含有dog的笔记</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">问题:</span><br></pre></td></tr></table></figure>
+
+<p>查找<strong>问题</strong>字段为空的笔记</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">问题:_*</span><br></pre></td></tr></table></figure>
+
+<p>又或者</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;note:[Basic Cloze Card]&quot; AND &quot;OldPart:_*&quot;</span><br></pre></td></tr></table></figure>
+
+<p>查找<strong>问题</strong>字段不为空的笔记，这个命令常常用来在删除卡片字段时用到。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">问题:*</span><br></pre></td></tr></table></figure>
+
+<p>查找具有<strong>问题</strong>字段的笔记，不论是否为空</p>
+<h5 id="标签搜索"><a href="#标签搜索" class="headerlink" title="标签搜索"></a>标签搜索</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tag:animal</span><br></pre></td></tr></table></figure>
+
+<p>查找带有”animal”标签的笔记</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tag:none</span><br></pre></td></tr></table></figure>
+
+<p>查找没有标签的笔记</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tag:ani*</span><br></pre></td></tr></table></figure>
+
+<p>查找带有以ani开头的标签的笔记</p>
+<h5 id="牌组搜索"><a href="#牌组搜索" class="headerlink" title="牌组搜索"></a>牌组搜索</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deck:french</span><br></pre></td></tr></table></figure>
+
+<p>在french牌组中查找卡片，或者在像French::Vocab这样的子牌组中查找</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deck:french -deck:french::*</span><br></pre></td></tr></table></figure>
+
+<p>在french牌组中查找卡片，而不包括子牌组</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deck:&quot;french vocab&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在牌组名中有空格时，请像上面的示例那样查找</p>
+<p>或者像下面这样查找也可以</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;deck:french vocab&quot;</span><br><span class="line"></span><br><span class="line">deck:filtered</span><br></pre></td></tr></table></figure>
+
+<p>仅在筛选牌组查找</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-deck:filtered</span><br></pre></td></tr></table></figure>
+
+<p>仅在一般牌组查找</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">card:forward</span><br></pre></td></tr></table></figure>
+
+<h5 id="卡片搜索"><a href="#卡片搜索" class="headerlink" title="卡片搜索"></a>卡片搜索</h5><p>查找卡片类型为forward的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">card:1</span><br></pre></td></tr></table></figure>
+
+<p>按模板编号查找卡片 - 例如，要找到笔记的第二个挖空卡片，您需要查找 card:2</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">note:basic</span><br></pre></td></tr></table></figure>
+
+<p>查找笔记类型为basic的卡片</p>
+<h5 id="卡片状态"><a href="#卡片状态" class="headerlink" title="卡片状态"></a>卡片状态</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:due</span><br></pre></td></tr></table></figure>
+
+<p>查找等待复习的卡片和等待学习的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:new</span><br></pre></td></tr></table></figure>
+
+<p>查找新的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:learn</span><br></pre></td></tr></table></figure>
+
+<p>查找学习中的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:review</span><br></pre></td></tr></table></figure>
+
+<p>查找复习（包括到期和未到期）和失误的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:suspended</span><br></pre></td></tr></table></figure>
+
+<p>查找手动暂停的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:buried</span><br></pre></td></tr></table></figure>
+
+<p>查找自动或手动搁置的卡片</p>
+<p>失误的卡片属于其中一个类别，因此将它们组合以获得更精确的结果可能很有用：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:learn is:review</span><br></pre></td></tr></table></figure>
+
+<p>查找已经失误且等待重新学习的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-is:learn is:review</span><br></pre></td></tr></table></figure>
+
+<p>查找复习卡片，不包括失误后重新学习的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:learn -is:review</span><br></pre></td></tr></table></figure>
+
+<p>查找第一次学习的卡片</p>
+<h5 id="卡片属性"><a href="#卡片属性" class="headerlink" title="卡片属性"></a>卡片属性</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;prop:ivl&gt;=40&quot;</span><br></pre></td></tr></table></figure>
+
+<p>查找间隔10天或以上的卡片。</p>
+<p>这是一个常用的方法。该方法可以用来查找那些到期时间非常长，我们担心自己忘了的情况下提前的进行一次复习。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:due=1</span><br></pre></td></tr></table></figure>
+
+<p>查找明天到期的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:due=-1</span><br></pre></td></tr></table></figure>
+
+<p>查找昨天到期的且没有回答的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:due&gt;-1 prop:due&lt;1</span><br></pre></td></tr></table></figure>
+
+<p>查找在昨天和明天之间到期的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:reps&lt;10</span><br></pre></td></tr></table></figure>
+
+<p>查找回答少于10次的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:lapses&gt;3</span><br></pre></td></tr></table></figure>
+
+<p>查找已经重新学习3次以上的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:ease!=2.5</span><br></pre></td></tr></table></figure>
+
+<p>查找比默认参数更简单或更难的卡片</p>
+<p>请注意，Anki 仅能查找到期日或间隔为一天或更长时间的复习卡片和学习卡片：不包括学习时间间隔较小的卡片，如10分钟。</p>
+<h5 id="最近添加的"><a href="#最近添加的" class="headerlink" title="最近添加的"></a>最近添加的</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">added:1</span><br></pre></td></tr></table></figure>
+
+<p>查找今天添加的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">added:7</span><br></pre></td></tr></table></figure>
+
+<p>查找在上周添加的卡片</p>
+<p>查找是针对卡片创建时间而不是笔记创建时间进行的，因此也会查找在限定时间范围内生成的卡片，即使他们的笔记是很久以前被添加的。</p>
+<h5 id="最近回答"><a href="#最近回答" class="headerlink" title="最近回答"></a>最近回答</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rated:1</span><br></pre></td></tr></table></figure>
+
+<p>查找今天回答的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rated:1:2</span><br></pre></td></tr></table></figure>
+
+<p>查找今天回答困难(2)的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rated:7:1</span><br></pre></td></tr></table></figure>
+
+<p>查找在过去7天内再次回答(1)的卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rated:31:4</span><br></pre></td></tr></table></figure>
+
+<p>查找在上个月回答简单(4)的卡片</p>
+<blockquote>
+<p>对于 rated，查找限制为31天。31天前回答的卡片将无法查找。</p>
+</blockquote>
+<h5 id="对象ID"><a href="#对象ID" class="headerlink" title="对象ID"></a>对象ID</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nid:123</span><br></pre></td></tr></table></figure>
+
+<p>查找笔记ID为123的所有卡片</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cid:123</span><br></pre></td></tr></table></figure>
+
+<p>查找卡片ID为123的卡片</p>
+<p>笔记和卡片ID可以在浏览器的卡片信息对话框（右键点击某张卡片后点击 「关于」）中找到。 通过点击卡片浏览器的笔记类型，可以找到笔记类型ID。 在进行插件开发或以其他方式与数据库密切合作时，这些搜索也可能会有所帮助。</p>
+<p>注意</p>
+<p>对象ID在移动客户端中不起作用，并且目前不打算在筛选的牌库中使用。</p>
+<p><em><strong>某些语法可以组合使用</strong></em></p>
+<h5 id="按标签筛选"><a href="#按标签筛选" class="headerlink" title="按标签筛选"></a>按标签筛选</h5><p>tag:Git 表示筛选标签为Git的卡片（如果该卡片有多个标签，只要有Git标签就会被筛选），比如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tag:Git prop:due&lt;1 prop:due&gt;-30 </span><br></pre></td></tr></table></figure>
+
+<p>表示筛选带Git标签的卡片，今天以及之前30天到期的</p>
+<p>当然，你也可以什么条件都不携带的单纯查询一个Tag。</p>
+<h5 id="按到期时间筛选"><a href="#按到期时间筛选" class="headerlink" title="按到期时间筛选"></a>按到期时间筛选</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">prop:due=0 表示今天到期的待复习卡片（常用）</span><br><span class="line"></span><br><span class="line">prop:due=-1 表示昨天到期（常用）。毫无疑问，明天到期就是due=1</span><br><span class="line"></span><br><span class="line">prop:due&gt;-4 prop:due&lt;0 今天之前的三天里到期的（常用），即-1，-2，-3</span><br></pre></td></tr></table></figure>
+
+<h5 id="按牌组筛选"><a href="#按牌组筛选" class="headerlink" title="按牌组筛选"></a>按牌组筛选</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deck:“deckname” 筛选指定名称的牌组（常用）</span><br><span class="line"></span><br><span class="line">-deck:“deckname” 排除指定名称的牌组（常用）</span><br></pre></td></tr></table></figure>
+
+<h5 id="按新卡片创建时间筛选"><a href="#按新卡片创建时间筛选" class="headerlink" title="按新卡片创建时间筛选"></a>按新卡片创建时间筛选</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">added:1 今天添加的卡片</span><br><span class="line"></span><br><span class="line">added:n 过去n天添加的卡片</span><br></pre></td></tr></table></figure>
+
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is:new 新卡片</span><br></pre></td></tr></table></figure>
+
+<h5 id="常见筛选语法"><a href="#常见筛选语法" class="headerlink" title="常见筛选语法"></a>常见筛选语法</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;deck:目标牌组&quot; AND &quot;prop:due&lt;1&quot; AND &quot;prop:due&gt;-20&quot;</span><br></pre></td></tr></table></figure>
+
+<p>​ 目标牌组之前20天到期的，也就是今天之前20天内你复习的内容。我们不选定Reschedule，从而我们可以反复的复习。但是我们的目的仅仅是重复复习一下，而不会让单词堆积到明天。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deck:“碎片时间” -deck:“碎片时间::EN” -deck:“碎片时间::Methodology” prop:due&lt;1 prop:due&gt;-15 </span><br></pre></td></tr></table></figure>
+
+<p>碎片时间之前15天到期的，且排除掉EN和Methodology两个子牌组</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">added:7 is:new -deck:&quot;目标牌组&quot;</span><br></pre></td></tr></table></figure>
+
+<p>过去7天添加的新卡片，且排除掉“待处理”这个牌组</p>
+]]></content>
+  </entry>
+</search>
